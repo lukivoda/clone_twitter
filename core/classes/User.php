@@ -57,6 +57,43 @@ class User {
 
     }
 
+    //method for checking if the email exists in the users table while the user is signing up
+    public function checkEmail($email){
+        $db = Db::getConnection();
+        $query = "SELECT email from users WHERE email = :email";
+        $statement = $db->prepare($query);
+        $statement->bindParam(":email",$email,PDO::PARAM_STR);
+
+        $statement->execute();
+        $count = $statement->rowCount();
+
+        if($count>0){
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
+
+    //registering new user(inserting into users table)
+    public function register($screenName,$email,$password){
+
+     $db = Db::getConnection();
+     $query = "INSERT INTO users(screenName,email,password,profileImage,profileCover) VALUES(:screenName,:email,:password,'assets/images/defaultprofileimage.png','assets/images/defaultCoverImage') ";
+     $statement = $db->prepare($query);
+
+     $statement->bindParam(":screenName",$screenName,PDO::PARAM_STR);
+     $statement->bindParam(":email",$email,PDO::PARAM_STR);
+     $statement->bindParam(":password",md5($password),PDO::PARAM_STR);
+
+     $statement->execute();
+     //getting the last id from the last inserted row
+     $lastInsertedId =  $db->lastInsertId();
+     //saving the lasting inserted  id in session variable
+     $_SESSION['user_id'] = $lastInsertedId;
+     }
+
    // logging user out with destroying session and redirecting to index page
     public function logOut() {
         $_SESSION = array();

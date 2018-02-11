@@ -40,9 +40,11 @@ if(isset($_POST['login'])){
 
         <?php
         if(isset($error)){?>
+            <ul>
             <li class="error-li">
                 <div class="span-fp-error"><?php echo $error ?></div>
             </li>
+            </ul>
        <?php }
         ?>
 
